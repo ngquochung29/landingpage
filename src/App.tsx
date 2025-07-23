@@ -27,10 +27,10 @@ function App() {
 
               {/*<Route path="/login" element={<LoginPage />} />*/}
               <Route path="/admin" element={<AdminLayout/>}>
-                  <Route path="dashboard" element={<Dashboard/>}/>
-                  <Route path="products" element={<Products/>}/>
-                  <Route path="add-prod/:code" element={<EditProduct/>}/>
-                  <Route path="category" element={<Category/>}/>
+                  <Route path="/dashboard" element={<Dashboard/>}/>
+                  <Route path="/products" element={<Products/>}/>
+                  <Route path="/add-prod/:code" element={<EditProduct/>}/>
+                  <Route path="/category" element={<Category/>}/>
               </Route>
           </Routes>
       </BrowserRouter>
