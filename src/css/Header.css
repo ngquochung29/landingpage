@@ -1,0 +1,16 @@
+/* Thêm vào App.css hoặc Header.css */
+.nav-link-item {
+    color: #333;
+    text-decoration: none !important;
+    font-size: 0.95rem;
+    font-weight: 600; /* chữ đậm hơn */
+    transition: color 0.2s ease;
+}
+
+.nav-link-item:hover {
+    color: #ff8000; /* màu cam khi hover */
+}
+
+.nav-link-item.active {
+    color: #ff8000; /* màu cam cho mục đang active */
+}

@@ -1,0 +1,14 @@
+$envTemplatePath = "public/env.template.js"
+$envOutputPath = "build/env.js"
+
+if (!(Test-Path $envTemplatePath)) {
+    Write-Error "Không tìm thấy env.template.js"
+    exit 1
+}
+
+$envContent = Get-Content $envTemplatePath
+$envContent = $envContent -replace "\$API_BASE_URL", $env:API_BASE_URL
+
+$envContent | Out-File -Encoding utf8 $envOutputPath
+
+Write-Host "✅ Đã tạo file env.js với API_BASE_URL = $($env:API_BASE_URL)"

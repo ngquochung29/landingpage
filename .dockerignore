@@ -1,0 +1,10 @@
+node_modules
+.git
+build
+.env
+*.log
+*.zip
+*.tar
+.DS_Store
+.vscode
+.idea
