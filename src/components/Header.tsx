@@ -71,23 +71,43 @@ function Header() {
 
 
                     {/* Giỏ hàng */}
-                    <NavLink to={"/cart"} className="col-2 col-md-2 d-flex align-items-center position-relative ps-3">
-                        <div className="position-relative">
-                            <FaIcons.FaShoppingBag size={20} className="text-dark" />
-                            <span
-                                className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                style={{
-                                    fontSize: "0.65rem",
-                                    minWidth: "16px",
-                                    height: "16px",
-                                    lineHeight: "14px",
-                                    padding: "0 4px",
-                                }}
-                            >
+                    <div className="col-2 col-md-2 d-flex align-items-center position-relative ps-3">
+                        <NavLink to={"/cart"} className="m-2">
+                            <div className="position-relative">
+                                <FaIcons.FaShoppingBag size={20} className="text-dark" />
+                                <span
+                                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style={{
+                                        fontSize: "0.65rem",
+                                        minWidth: "16px",
+                                        height: "16px",
+                                        lineHeight: "14px",
+                                        padding: "0 4px",
+                                    }}
+                                >
                               1
                             </span>
-                        </div>
-                    </NavLink>
+                            </div>
+                        </NavLink>
+
+                        <NavLink to={"/admin"} className="m-2">
+                            <div className="position-relative">
+                                <FaIcons.FaUserLock size={20} className="text-dark" />
+                                <span
+                                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style={{
+                                        fontSize: "0.65rem",
+                                        minWidth: "16px",
+                                        height: "16px",
+                                        lineHeight: "14px",
+                                        padding: "0 4px",
+                                    }}
+                                >
+
+                            </span>
+                            </div>
+                        </NavLink>
+                    </div>
 
                 </div>
 
