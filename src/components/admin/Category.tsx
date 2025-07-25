@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Collapse,
@@ -14,16 +14,33 @@ import {
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import {Category, mockCategory} from "../../types/Dto";
-
-
+import { Category, mockCategory } from '../../types/Dto';
+import { Form } from 'react-bootstrap';
 
 const CategoryTable = () => {
+    const [cateLst, setCateLst] = useState<Category[]>(mockCategory);
+
+    useEffect(() => {
+        console.log(cateLst);
+    }, [cateLst]);
+
     return (
         <>
             <Typography variant="h5" gutterBottom>
                 Quản lý danh mục
             </Typography>
+
+            <div className="row mb-3">
+                <div className="col-4">
+                    <Form>
+                        <Form.Group className="mb-1">
+                            <Form.Label>Tên danh mục</Form.Label>
+                            <Form.Control name="name" required type="text" />
+                        </Form.Group>
+                    </Form>
+                </div>
+                <div className="col-6"></div>
+            </div>
 
             <TableContainer component={Paper}>
                 <Table>
@@ -32,11 +49,17 @@ const CategoryTable = () => {
                             <TableCell />
                             <TableCell>Tên danh mục</TableCell>
                             <TableCell>Mã danh mục</TableCell>
+                            <TableCell>Hình ảnh Banner</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {mockCategory.map((row, index) => (
-                            <CategoryRow row={row} key={index} />
+                        {cateLst?.map((row, index) => (
+                            <CategoryRow
+                                row={row}
+                                key={index}
+                                list={cateLst}
+                                setCateLst={setCateLst}
+                            />
                         ))}
                     </TableBody>
                 </Table>
@@ -44,12 +67,31 @@ const CategoryTable = () => {
         </>
     );
 };
+
 interface CategoryRowProps {
     row: Category;
+    list: Category[];
+    setCateLst: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-const CategoryRow = ({ row }: CategoryRowProps) => {
-    const [open, setOpen] = React.useState(false);
+const CategoryRow = ({ row, list, setCateLst }: CategoryRowProps) => {
+    const [open, setOpen] = useState(false);
+
+    const setName = (parentCode: string, childCode: string, name: string) => {
+        setCateLst((prev) =>
+            prev.map((parent) =>
+                parent.code === parentCode
+                    ? {
+                        ...parent,
+                        name: childCode ? parent.name : name,
+                        child: parent.child?.map((child) =>
+                            child.code === childCode ? { ...child, name } : child
+                        )
+                    }
+                    : parent
+            )
+        );
+    };
 
     return (
         <>
@@ -59,8 +101,17 @@ const CategoryRow = ({ row }: CategoryRowProps) => {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell>{row.name}</TableCell>
+                <TableCell>
+                    <input
+                        className="form-control"
+                        onChange={(e) => setName(row.code, '', e.target.value)}
+                        value={row.name}
+                    />
+                </TableCell>
                 <TableCell>{row.code}</TableCell>
+                <TableCell>
+                    <img src={row.image} className="product-image" />
+                </TableCell>
             </TableRow>
 
             <TableRow>
@@ -80,7 +131,15 @@ const CategoryRow = ({ row }: CategoryRowProps) => {
                                 <TableBody>
                                     {row.child?.map((child, idx) => (
                                         <TableRow key={idx}>
-                                            <TableCell>{child.name}</TableCell>
+                                            <TableCell>
+                                                <input
+                                                    onChange={(e) =>
+                                                        setName(row.code, child.code, e.target.value)
+                                                    }
+                                                    className="form-control"
+                                                    value={child.name}
+                                                />
+                                            </TableCell>
                                             <TableCell>{child.code}</TableCell>
                                         </TableRow>
                                     ))}

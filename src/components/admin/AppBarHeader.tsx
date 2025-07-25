@@ -6,6 +6,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import {NavLink, useNavigate} from "react-router-dom";
 
 interface AppBarHeaderProps {
     toggleDrawer: () => void;
@@ -19,17 +20,16 @@ const AppBarHeader: React.FC<AppBarHeaderProps> = ({ toggleDrawer }) => {
                     <IconButton color="inherit" onClick={toggleDrawer} edge="start" sx={{ mr: 1 }}>
                         <MenuIcon />
                     </IconButton>
-                    <Box display="flex" alignItems="center">
-                        <Box
-                            component="img"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE4ztaj8nlwBLlB1msMpD7tFby6YfytmzURQ&s"
-                            alt="Logo"
-                            sx={{ height: 32, mr: 1 }}
-                        />
-                        <Typography variant="h6" noWrap sx={{ color: 'white', fontWeight: 'bold' }}>
-                            Admin
-                        </Typography>
-                    </Box>
+                    <NavLink  to={"/"}>
+                        <Box display="flex" alignItems="center">
+                            <Box
+                                component="img"
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE4ztaj8nlwBLlB1msMpD7tFby6YfytmzURQ&s"
+                                alt="Logo"
+                                sx={{ height: 50, mr: 1 }}
+                            />
+                        </Box>
+                    </NavLink>
                 </Box>
 
                 <Box display="flex" alignItems="center" gap={2}>

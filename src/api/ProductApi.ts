@@ -22,21 +22,21 @@ export function findProdByCode(code: string): Promise<Product> {
         });
 }
 
-export function createProductDT(product:ProductDetail): void {
-    axiosInstance.post("/api/external/product/create/detail", product).then(r => r.data)
-        .catch(err=> console.log(err))
+export function createProductDT(product:ProductDetail): Promise<BaseResponse> {
+    return axiosInstance.post<BaseResponse>("/api/external/product/create/detail", product).then(r => r.data)
+        .catch(err=> {throw err})
 }
 
 
-export function updateProductDT(product:ProductDetail): void {
-    axiosInstance.post("/api/external/product/create/detail", product).then(r => r.data)
-        .catch(err=> console.log(err))
+export function updateProductDT(product:ProductDetail): Promise<BaseResponse> {
+    return axiosInstance.put("/api/external/product/update/detail", product).then(r => r.data)
+        .catch(err=> {throw err})
 }
 
 
-export function createProduct(product:Product): void {
-    axiosInstance.put("/api/external/product/create", product).then(r => r.data)
-        .catch(err=> console.log(err))
+export function createProduct(product:Product): Promise<string> {
+    return axiosInstance.post<BaseResponse>("/api/external/product/create", product).then(r => r.data.data as string)
+        .catch((err)=> {throw err;})
 }
 
 export function updateProduct(product:Product): void {

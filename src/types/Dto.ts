@@ -47,7 +47,7 @@ export interface ProductDetail{
     parentCode:string;
     size:string;
     color:string;
-    price: string
+    price: number
     quantity: number;
     sold: number;
     imageUrl: string;
@@ -79,6 +79,7 @@ export interface CheckOut {
 export interface Category{
     name: string,
     code: string,
+    image: string,
     child: Category[]
 }
 
@@ -97,15 +98,18 @@ export const mockCategory: Category [] = [
     {
         name: "TL1",
         code: "001",
+        image:"",
         child: [
             {
                 name: "TLC_CT1",
                 code: "001_001",
+                image:"",
                 child: []
             },
             {
                 name: "TLC_CT2",
                 code: "001_002",
+                image:"",
                 child: []
             }
         ]
@@ -113,10 +117,12 @@ export const mockCategory: Category [] = [
     {
         name: "TL2",
         code: "002",
+        image:"",
         child: [
             {
                 name: "TL_CT1",
                 code: "002_001",
+                image:"",
                 child: []
             }
         ]
@@ -129,7 +135,7 @@ export const mockProductDT: ProductDetail = {
     imageUrl:"",
     quantity:0,
     sold:0,
-    price:"",
+    price:0,
     size:"",
     color:""
 }

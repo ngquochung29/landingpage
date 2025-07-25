@@ -104,8 +104,8 @@ const Products = () => {
                             <TableRow>
                                 <TableCell>{prod.code}</TableCell>
                                 <TableCell>{prod.name}</TableCell>
-                                <TableCell>Tổng SL con</TableCell>
-                                <TableCell>Tổng SL da ban</TableCell>
+                                <TableCell>{prod.brand}</TableCell>
+                                <TableCell>{prod.category}</TableCell>
                                 <TableCell><img
                                     src={prod?.avtUrl || ""}
                                     className="product-image"

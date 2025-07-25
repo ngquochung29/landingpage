@@ -26,6 +26,13 @@ code {
   object-fit: contain;
   border-radius: 6px;
 }
+
+.add-product-detail-image {
+  max-width: 400px;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 6px;
+}
 .showCT{
   display: flex;
   justify-content: flex-end;

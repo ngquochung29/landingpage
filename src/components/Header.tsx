@@ -2,6 +2,8 @@ import * as FaIcons from "react-icons/fa";
 import logo from "../assets/logo.png";
 import {NavLink} from "react-router-dom";
 import '../css/Header.css'
+import {Box} from "@mui/material";
+import React from "react";
 
 function Header() {
     function redirectCart(){
@@ -13,7 +15,12 @@ function Header() {
                 <div className="row align-items-center">
                     {/* Logo */}
                     <NavLink to={"/"} className="col-2 d-flex justify-content-center align-items-center">
-                        <img src={logo} alt="Logo" style={{height: "28px"}}/>
+                        <Box
+                            component="img"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE4ztaj8nlwBLlB1msMpD7tFby6YfytmzURQ&s"
+                            alt="Logo"
+                            sx={{ height: 70, mr: 1 }}
+                        />
                     </NavLink>
 
                     {/* Ô tìm kiếm */}

@@ -45,7 +45,7 @@ const  EditProduct = () => {
         quantity:0,
         sold:0
     });
-
+    const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
 
     const handleCloseModal = () => {
@@ -81,8 +81,12 @@ const  EditProduct = () => {
                 var sold = 0;
                 var quantity = 0;
                 value.productDetails.forEach(pd=>{
-                    sold+=pd.sold;
-                    quantity+=pd.quantity;
+                    if (pd.sold){
+                        sold+=pd.sold;
+                    }
+                    if (pd.quantity){
+                        quantity+=pd.quantity;
+                    }
                 })
                 setSale({quantity,sold});
             }
@@ -162,11 +166,23 @@ const  EditProduct = () => {
 
 
     const addProduct = () =>{
-        createProduct(product)
+        console.log(product)
+        createProduct(product).then((code)=>{
+            alert("Thanh cong");
+            navigate("/admin/add-prod/"+code);
+        })
     }
 
     const editProduct = () =>{
+        console.log(product)
         updateProduct(product)
+    }
+
+    const createPD = () =>{
+        if (code==="null"){
+            alert("Vui loi luu san pham truoc")
+        }
+        setModalOpen(true);
     }
 
     const handleOpenModal = (pd:ProductDetail) =>{
@@ -182,7 +198,7 @@ const  EditProduct = () => {
                     <img
                         src={product?.avtUrl ? `${product.avtUrl}?t=${Date.now()}` : ""}
                         alt={product?.name}
-                        className="img-fluid rounded"
+                        className="add-product-detail-image"
                     />
                     <Button onClick={handleClick}>
                         Upload <UploadFile/>
@@ -287,7 +303,7 @@ const  EditProduct = () => {
                     />
 
                     {/* Nút thêm sản phẩm bên phải */}
-                    <Button onClick={()=>setModalOpen(true)}  variant="contained" color="primary" startIcon={<AddIcon />}>
+                    <Button onClick={()=>createPD()}  variant="contained" color="primary" startIcon={<AddIcon />}>
                         Thêm sản phẩm
                     </Button>
                 </Box>
@@ -298,8 +314,9 @@ const  EditProduct = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Mã SP</TableCell>
-                                <TableCell>Tổng SL con</TableCell>
-                                <TableCell>Tổng SL da ban</TableCell>
+                                <TableCell>Giá tiền</TableCell>
+                                <TableCell>Tổng SL còn lại</TableCell>
+                                <TableCell>Tổng SL đã bán</TableCell>
                                 <TableCell>Color</TableCell>
                                 <TableCell>Size</TableCell>
                                 <TableCell>Hình ảnh</TableCell>
@@ -307,13 +324,14 @@ const  EditProduct = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {product?.productDetails?.map((prod, index) => (
+                            {product?.productDetails?.sort().map((prod, index) => (
                                 <TableRow>
                                     <TableCell>{prod.code}</TableCell>
+                                    <TableCell>{prod.price}</TableCell>
+                                    <TableCell>{prod.quantity}</TableCell>
+                                    <TableCell>{prod.sold ? prod.sold: 0} </TableCell>
                                     <TableCell>{prod.color}</TableCell>
-                                    <TableCell>Tổng SL con</TableCell>
-                                    <TableCell>Tổng SL da ban</TableCell>
-                                    <TableCell>Tổng SL con</TableCell>
+                                    <TableCell>{prod.size}</TableCell>
                                     <TableCell>
                                         <img
                                             src={prod?.imageUrl || ""}
@@ -322,7 +340,7 @@ const  EditProduct = () => {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <Button onClick={()=>handleCloseModal()} variant="contained" color="primary" startIcon={<Edit2 />}>
+                                        <Button onClick={()=>handleOpenModal(prod)} variant="contained" color="primary" startIcon={<Edit2 />}>
                                             edit
                                         </Button>
                                     </TableCell>
@@ -338,9 +356,10 @@ const  EditProduct = () => {
                     onSubmit={(pd) => {
                         console.log("Dữ liệu gửi lên:", pd);
                         setModalOpen(false); // đóng modal sau khi submit
+                        navigate("/admin/add-prod/"+code);
                     }}
                     data={pd}
-                    dataList={product.productDetails}
+                    product={product}
                 />
             </div>
         </div>
