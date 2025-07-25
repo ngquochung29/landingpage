@@ -40,7 +40,7 @@ export default function MyCart(props: MyCartProps)  {
                     ) : (
                         newTran.products.map(item => (
                             <div key={item.code} className="d-flex align-items-center p-3 border-bottom">
-                                <img src={item.image} alt={item.name} style={{width: 64, height: 64, objectFit: 'cover'}}
+                                <img src={item.avtUrl} alt={item.name} style={{width: 64, height: 64, objectFit: 'cover'}}
                                      className="me-3 rounded"/>
                                 <div className="flex-grow-1">
                                     <div className="d-flex justify-content-between align-items-start">

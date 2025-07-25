@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Collapse,
@@ -11,19 +11,52 @@ import {
     TableRow,
     Typography,
     Paper, TextField,
-    Button
+    Button, SelectChangeEvent
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import {Category, mockCategory, mockProductList} from "../../types/Dto";
+import {Brand, Category, mockCategory, mockProductList, PageDto, Product, ProductQuery} from "../../types/Dto";
 import {Edit2} from "lucide-react";
 import {useNavigate} from "react-router-dom";
+import {fetchProducts} from "../../api/ProductApi";
 
 
 
 const Products = () => {
+    const [products, setProducts] = useState<Product[]>();
+    const [repsData, setRepsData] = useState<PageDto>();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [query,setQuery] = useState<ProductQuery>({
+        sortDir: "DESC",
+        sortBy : "createdAt",
+        page:0,
+        size:10,
+        query: "",
+        category: "",
+        brand:""
+    })
+    useEffect(() => {
+        fetchProducts(query)
+            .then(data => {
+                setRepsData(data);
+                setProducts(data.data)
+            })
+            .catch(err => console.error("Lỗi lấy sản phẩm:", err));
+    }, [query]);
+
+    const handleSearch = () => {
+        setQuery(q => ({
+            ...q,
+            query: searchTerm
+        }));
+    };
+
     const navigate = useNavigate();
     const addProduct = () =>{
-        navigate("/admin/add-prod");
+        navigate("/admin/add-prod/null");
+    }
+
+    const editProduct = (code:string) =>{
+        navigate("/admin/add-prod/"+code);
     }
     return (
         <>
@@ -37,6 +70,14 @@ const Products = () => {
                         label="Tìm kiếm sản phẩm"
                         variant="outlined"
                         size="small"
+                        name="query"
+                        defaultValue={query.query}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSearch();
+                            }
+                        }}
                     />
 
                     {/* Nút thêm sản phẩm bên phải */}
@@ -52,8 +93,6 @@ const Products = () => {
                         <TableRow>
                             <TableCell>Mã SP</TableCell>
                             <TableCell>Tên SP</TableCell>
-                            <TableCell>Tổng SL con</TableCell>
-                            <TableCell>Tổng SL da ban</TableCell>
                             <TableCell>Nhãn hiệu</TableCell>
                             <TableCell>Loại SP</TableCell>
                             <TableCell>Hình ảnh</TableCell>
@@ -61,17 +100,19 @@ const Products = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {mockProductList.map((prod, index) => (
+                        {products?.map((prod, index) => (
                             <TableRow>
                                 <TableCell>{prod.code}</TableCell>
                                 <TableCell>{prod.name}</TableCell>
                                 <TableCell>Tổng SL con</TableCell>
                                 <TableCell>Tổng SL da ban</TableCell>
-                                <TableCell>Tổng SL con</TableCell>
-                                <TableCell>Tổng SL da ban</TableCell>
-                                <TableCell><img src={prod.image} className="img-fluid rounded" /></TableCell>
+                                <TableCell><img
+                                    src={prod?.avtUrl || ""}
+                                    className="product-image"
+                                    alt="product"
+                                /></TableCell>
                                 <TableCell>
-                                    <Button variant="contained" color="primary" startIcon={<Edit2 />}>
+                                    <Button onClick={()=>editProduct(prod.code)}  variant="contained" color="primary" startIcon={<Edit2 />}>
                                         edit
                                     </Button>
                                 </TableCell>

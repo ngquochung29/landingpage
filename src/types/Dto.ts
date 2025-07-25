@@ -9,11 +9,48 @@ export interface Product {
     category:string;
     price: number;
     discount: number; // %
-    image: string;
     colors: string[]; // Mã màu dạng HEX hoặc tên CSS
     quantity: number;
     tl:string;
-    desc:string
+    description:string;
+    mode : string;
+    avtUrl: string;
+    productDetails: ProductDetail[]
+}
+
+export interface ProductQuery {
+    query: string,
+    category:string,
+    brand:string,
+    sortBy : string,
+    sortDir:string,
+    page: number,
+    size:number
+}
+
+export interface PageDto{
+    pageCurrent: number,
+    size: number,
+    totalRecords: number,
+    totalPages: number,
+    data: Product[]
+}
+
+export interface BaseResponse{
+    status: string,
+    timestamp: Date,
+    data: any
+}
+
+export interface ProductDetail{
+    code:string;
+    parentCode:string;
+    size:string;
+    color:string;
+    price: string
+    quantity: number;
+    sold: number;
+    imageUrl: string;
 }
 
 export interface Brand {
@@ -62,8 +99,13 @@ export const mockCategory: Category [] = [
         code: "001",
         child: [
             {
-                name: "TL_001",
-                code: "001",
+                name: "TLC_CT1",
+                code: "001_001",
+                child: []
+            },
+            {
+                name: "TLC_CT2",
+                code: "001_002",
                 child: []
             }
         ]
@@ -73,13 +115,32 @@ export const mockCategory: Category [] = [
         code: "002",
         child: [
             {
-                name: "TL_002",
-                code: "002",
+                name: "TL_CT1",
+                code: "002_001",
                 child: []
             }
         ]
     }
 ]
+
+export const mockProductDT: ProductDetail = {
+    code: "",
+    parentCode: "",
+    imageUrl:"",
+    quantity:0,
+    sold:0,
+    price:"",
+    size:"",
+    color:""
+}
+
+
+export const mockProductDTs: ProductDetail[] = [
+    mockProductDT,
+    mockProductDT,
+    mockProductDT
+]
+
 
 export const mockProduct: Product = {
     code: "code",
@@ -88,11 +149,13 @@ export const mockProduct: Product = {
     discount: 30,
     brand: "a",
     category: "a",
-    image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
+    avtUrl: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
     colors: ["#dfe4e3", "#000", "#b0d7e9"],
     quantity: 3,
     tl:"",
-    desc:"1",
+    description:"1",
+    mode: "",
+    productDetails: mockProductDTs
 }
 
 export const mockTransaction: Transaction = {
@@ -132,69 +195,8 @@ export const mockTransactionList: Transaction[] = [
 ]
 
 export const mockProductList: Product[] = [
-    {
-        code: "1",
-        name: "Áo Phông Dáng Croptop In Ngực Áo",
-        price: 199000,
-        discount: 30,
-        brand: "a",
-        category: "a",
-        image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
-        colors: ["#f5d7dc", "#000000", "#fce97a"],
-        quantity: 2,
-        tl:"1",
-        desc:"1",
-    },
-    {
-        code: "2",
-        name: "Áo Phông Nam Thể Thao Dệt Thoáng Khí",
-        price: 249000,
-        discount: 30,
-        brand: "a",
-        category: "a",
-        image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
-        colors: ["#dfe4e3", "#000", "#b0d7e9"],
-        quantity: 99,
-        tl:"1",
-        desc:"1",
-    },
-    {
-        code: "3",
-        name: "Áo Phông Nam Thể Thao Dệt Thoáng Khí",
-        price: 249000,
-        discount: 30,
-        brand: "a",
-        category: "a",
-        image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
-        colors: ["#dfe4e3", "#000", "#b0d7e9"],
-        quantity: 20,
-        tl:"1",
-        desc:"1",
-    },
-    {
-        code: "4",
-        name: "Áo Phông Nam Thể Thao Dệt Thoáng Khí",
-        price: 249000,
-        brand: "a",
-        category: "a",
-        discount: 30,
-        image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
-        colors: ["#dfe4e3", "#000", "#b0d7e9"],
-        quantity: 2,
-        tl:"1",
-        desc:"1",
-    },
-    {
-        code: "5",
-        name: "Áo Phông Nam Thể Thao Dệt Thoáng Khí",
-        price: 249000,
-        discount: 30,
-        brand: "a",
-        category: "a",
-        image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=431&height=575",
-        colors: ["#dfe4e3", "#000", "#b0d7e9"],
-        quantity: 2,
-        tl:"1",
-        desc:"1",
-    }
+    mockProduct,
+    mockProduct,
+    mockProduct,
+    mockProduct
 ];

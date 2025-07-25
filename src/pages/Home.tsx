@@ -12,7 +12,7 @@ function Home() {
             <HeroBanner />
             <CategorySection />
             <ProductSection />
-            <Footer/>
+            {/*<Footer/>*/}
         </>
     );
 }

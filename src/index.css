@@ -11,3 +11,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.product-image {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.product-detail-image {
+  max-width: 300px;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.showCT{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.showBr{
+  display: flex;
+  justify-content: flex-start;
+}

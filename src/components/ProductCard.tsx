@@ -1,6 +1,8 @@
 // src/components/ProductCard.tsx
 import { Product } from "../types/Dto";
 import {NavLink} from "react-router-dom";
+import {useEffect} from "react";
+import {fetchProducts} from "../api/ProductApi";
 // import "./ProductCard.css"; // nếu cần tùy chỉnh thêm CSS
 
 interface Props {
@@ -10,12 +12,17 @@ interface Props {
 function ProductCard({ product }: Props) {
     const finalPrice = Math.round(product.price * (1 - product.discount / 100));
 
+    useEffect(() => {
+        console.log("vao day")
+        console.log(product)
+    }, []);
+
     return (
         <NavLink to={"/product/"+product.code} className="p-1">
             <div className="bg-white rounded shadow-sm overflow-hidden position-relative">
                 {/* Ảnh sản phẩm */}
                 <img
-                    src={product.image}
+                    src={product.avtUrl}
                     alt={product.name}
                     className="w-100"
                     style={{ objectFit: "cover", borderRadius: "10px", aspectRatio: "1/1" }}
@@ -60,7 +67,7 @@ function ProductCard({ product }: Props) {
 
                     {/* Chấm màu */}
                     <div className="d-flex gap-1 mt-2">
-                        {product.colors.map((color, index) => (
+                        {product.colors?.map((color, index) => (
                             <span
                                 key={index}
                                 style={{

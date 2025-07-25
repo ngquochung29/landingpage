@@ -2,14 +2,14 @@
 import ProductSection from "../components/ProductSection";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import ProductDetail from "../components/ProductDetail";
+import ProductDetailPage from "../components/ProductDetailPage";
 
 function Product() {
     return (
         <>
             <Header/>
-            <ProductDetail />
-            <Footer/>
+            <ProductDetailPage />
+            {/*<Footer/>*/}
         </>
     );
 }

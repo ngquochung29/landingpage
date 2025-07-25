@@ -1,19 +1,33 @@
 // components/ProductSection.tsx
 import ProductCard from './ProductCard';
-import {mockProductList, Product} from '../types/Dto';
+import {mockProductList, PageDto, Product, ProductQuery} from '../types/Dto';
 import {useEffect, useState} from "react";
 import {fetchProducts} from "../api/ProductApi";
 
 
 
 function ProductSection() {
-    const [products, setProducts] = useState<Product[]>();
+    const [products, setProducts] = useState<Product[]|[]>();
+    const [query,setQuery] = useState<ProductQuery>({
+        sortDir: "DESC",
+        sortBy : "createdAt",
+        page:0,
+        size:10,
+        query: "",
+        category: "",
+        brand:""
+    })
+    const [repsData, setRepsData] = useState<PageDto>();
+
     useEffect(() => {
-        // fetchProducts()
-        //     .then(data => setProducts(data))
-        //     .catch(err => console.error("Lỗi lấy sản phẩm:", err));
-        setProducts(mockProductList)
-    }, []);
+        fetchProducts(query)
+            .then(data => {
+                console.log(data)
+                setRepsData(data);
+                setProducts(data.data)
+            })
+            .catch(err => console.error("Lỗi lấy sản phẩm:", err));
+    }, [query]);
     return (
         <div className="container mt-3">
             <div className="row">

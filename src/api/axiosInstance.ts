@@ -1,12 +1,15 @@
 // src/api/axiosInstance.ts
 import axios from "axios";
 
-// Đọc từ biến môi trường runtime
-const apiUrl = process.env.VITE_API_URL;
+const apiUrl = "http://localhost:8080";
+// const apiUrl = "https://fashionshop-service-378832852436.asia-southeast1.run.app";
+const customerCode = localStorage.getItem("customerCode");
+const token = localStorage.getItem("token");
 const axiosInstance = axios.create({
     baseURL: apiUrl,
     headers: {
         "Content-Type": "application/json",
+        "customerCode": customerCode
     }
 });
 

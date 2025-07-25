@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     Box,
     Collapse,
@@ -14,16 +14,50 @@ import {
     Button, InputLabel, NativeSelect, Select, OutlinedInput, MenuItem, Theme, useTheme, SelectChangeEvent
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import {Category, CheckOut, mockbrand, mockCategory, mockProduct, mockProductList, Product} from "../../types/Dto";
+import {
+    Category,
+    CheckOut,
+    mockbrand,
+    mockCategory,
+    mockProduct, mockProductDT,
+    mockProductDTs,
+    mockProductList,
+    Product, ProductDetail
+} from "../../types/Dto";
 import {Edit2} from "lucide-react";
 import {useNavigate, useParams} from "react-router-dom";
 import {Card, Form} from "react-bootstrap";
 import {PaymentMethod, ShipType} from "../../types/Enums";
-
-
-
-const EditProduct = () => {
+import { UploadFile } from '@mui/icons-material';
+import {uploadFile} from "../../api/ImageApi";
+import {createProduct, findProdByCode, updateProduct} from "../../api/ProductApi";
+import imageCompression from "browser-image-compression";
+import {compressImage} from "../../types/ImageUtils";
+import AddEditProductDT from "./AddEditProductDT";
+interface SaleDto{
+    quantity:number,
+    sold:number
+}
+const  EditProduct = () => {
     const { code } = useParams();
+    const [pd, setPd] = useState<ProductDetail>(mockProductDT);
+    const [sale,setSale] = useState<SaleDto>({
+        quantity:0,
+        sold:0
+    });
+
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const handleSubmit = (data: any) => {
+        console.log("Dữ liệu gửi lên:", data);
+        setModalOpen(false);
+    };
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [product,setProduct] =   useState<Product>({
         code: "",
         name: "",
@@ -32,34 +66,53 @@ const EditProduct = () => {
         quantity:1,
         discount:1,
         colors:[],
-        image: "",
+        avtUrl: "",
         category:"",
         tl:"",
-        desc:"1",
+        description: "1",
+        mode:"",
+        productDetails:[]
     });
     const [category, setCategory] = useState<Category>();
-    const theme = useTheme();
-    const [tl, setTL] = useState<string>();
-    const [personName, setPersonName] = useState<string>("");
 
-    const handleChange = (event: SelectChangeEvent<string>) => {
-        setPersonName(event.target.value);
-    };
+    const findProd = () =>{
+        findProdByCode(code? code:"").then(value => {
+            if (value.productDetails){
+                var sold = 0;
+                var quantity = 0;
+                value.productDetails.forEach(pd=>{
+                    sold+=pd.sold;
+                    quantity+=pd.quantity;
+                })
+                setSale({quantity,sold});
+            }
+            if (value.category){
+                var tl =value.category.substring(0,3);
+                value = {
+                    ...value,
+                    tl:value.category.substring(0,3)
+                }
+                setCategory(mockCategory.find((c) => c.code === tl))
+            }
+            setProduct(value);
+        }).catch(
+            err => alert("Lỗi!"+ err)
+        )
+    }
 
     useEffect(() => {
-        const found = mockProductList.find((p) => p.code === code);
-        if (found){
-            setProduct(found)
-        }else {
-            setProduct(mockProduct)
+        if (code!== "null"){
+            findProd()
         }
     }, [code]);
+
+    useEffect(() => {
+    }, [product,sale]);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-        console.log(e.target)
         setProduct(prev => ({
             ...prev,
             [name]: value,
@@ -68,22 +121,84 @@ const EditProduct = () => {
             setCategory(mockCategory.find((c) => c.code === e.target.value))
         }
     };
+    const handleClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            console.log("File selected:", file);
+            // TODO: xử lý file ở đây
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            const fileName = file.name.toLowerCase();
+            const isImage = allowedExtensions.some(ext => fileName.endsWith(`.${ext}`));
+
+            if (!isImage) {
+                alert("Vui lòng chọn một file ảnh (jpg, png, gif, webp)!");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File ảnh phải nhỏ hơn 5MB!");
+                return;
+            }
+            console.log(file.size)
+            const formData = new FormData();
+            compressImage(file).then(
+                newFile =>{
+                    formData.append('file', newFile);
+                    console.log(newFile.size)
+                    const url =  uploadFile(formData);
+                    url.then(d => {
+                        setProduct(prev => ({
+                            ...prev,
+                            avtUrl: d
+                        }));
+                    }).catch(err => alert("Lỗi upload file!"));
+                }
+            );
+        }
+    }
 
 
-    // const addProduct = () =>{
-    //     navigate("/admin/add-prod");
-    // }
+    const addProduct = () =>{
+        createProduct(product)
+    }
+
+    const editProduct = () =>{
+        updateProduct(product)
+    }
+
+    const handleOpenModal = (pd:ProductDetail) =>{
+        setPd(pd);
+        setModalOpen(true);
+    }
+
+
     return (
         <div className="container my-5">
             <div className="row">
                 <div className="col-md-6">
-                    <img src={product?.image} alt={product?.name} className="img-fluid rounded" />
+                    <img
+                        src={product?.avtUrl ? `${product.avtUrl}?t=${Date.now()}` : ""}
+                        alt={product?.name}
+                        className="img-fluid rounded"
+                    />
+                    <Button onClick={handleClick}>
+                        Upload <UploadFile/>
+                    </Button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        style={{ display: "none" }}
+                    />
                 </div>
                 <div className="col-md-6">
                     <Form>
                         <Form.Group className="mb-1">
                             <Form.Label>Tên sản phẩm</Form.Label>
-                            <Form.Control name="name" onChange={handleInputChange} value={product.name}
+                            <Form.Control name="name" onChange={handleInputChange} defaultValue={product.name}
                                           required={true} type="text" />
                         </Form.Group>
                         <Form.Group className="mb-1">
@@ -91,12 +206,12 @@ const EditProduct = () => {
                             <Form.Select
                                 name="brand"
                                 onChange={handleInputChange}
-                                defaultValue={product.brand}
+                                value={product.brand}
                                 required
                             >
                                 <option value="">-- Chọn nhãn hàng --</option>
                                 {mockbrand.map((brand) => (
-                                    <option value={brand.code}>
+                                    <option value={brand.code} >
                                         {brand.name}
                                     </option>
                                 ))}
@@ -107,7 +222,7 @@ const EditProduct = () => {
                             <Form.Select className="mb-1"
                                 name="tl"
                                 onChange={handleInputChange}
-                                defaultValue= {product.tl}
+                                value= {product.tl}
                                 required
                             >
                                 <option value="">-- Chọn the loai --</option>
@@ -121,7 +236,7 @@ const EditProduct = () => {
                                 <Form.Select
                                     name="category"
                                     onChange={handleInputChange}
-                                    defaultValue={product.category}
+                                    value={product.category}
                                     required
                                 >
                                     <option value="">-- Chọn thể loại chi tiết --</option>
@@ -132,6 +247,12 @@ const EditProduct = () => {
                                     ))}
                                 </Form.Select>
                             )}
+                            <Form.Group className="mt-1 mb-1">
+                                <Form.Label>Đã bán: {sale.sold}</Form.Label>
+                            </Form.Group>
+                            <Form.Group className="mb-1">
+                                <Form.Label>Tổng sản phẩm còn lại: {sale.quantity}</Form.Label>
+                            </Form.Group>
                             <Form.Group className="mb-1">
                                 <Form.Label>Mô tả chi tiết</Form.Label>
                                 <Form.Control
@@ -139,7 +260,7 @@ const EditProduct = () => {
                                     as="textarea"
                                     rows={4}
                                     onChange={handleInputChange}
-                                    defaultValue={product.desc}
+                                    defaultValue={product.description}
                                     required
                                 />
                             </Form.Group>
@@ -148,7 +269,8 @@ const EditProduct = () => {
 
                     <div className="d-flex gap-2">
                         <button className="btn btn-warning">Thêm voucher</button>
-                        <button className="btn btn-success">Thêm sản phẩm</button>
+                        {code ==="null"  ? (<button type={"submit"} onClick={addProduct} className="btn btn-success">Thêm sản phẩm</button>) :
+                            (<button type={"submit"} onClick={editProduct} className="btn btn-success">Sửa sản phẩm</button>)}
                     </div>
                 </div>
             </div>
@@ -165,7 +287,7 @@ const EditProduct = () => {
                     />
 
                     {/* Nút thêm sản phẩm bên phải */}
-                    <Button  variant="contained" color="primary" startIcon={<AddIcon />}>
+                    <Button onClick={()=>setModalOpen(true)}  variant="contained" color="primary" startIcon={<AddIcon />}>
                         Thêm sản phẩm
                     </Button>
                 </Box>
@@ -185,16 +307,22 @@ const EditProduct = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {mockProductList.map((prod, index) => (
+                            {product?.productDetails?.map((prod, index) => (
                                 <TableRow>
                                     <TableCell>{prod.code}</TableCell>
-                                    <TableCell>{prod.name}</TableCell>
+                                    <TableCell>{prod.color}</TableCell>
                                     <TableCell>Tổng SL con</TableCell>
                                     <TableCell>Tổng SL da ban</TableCell>
                                     <TableCell>Tổng SL con</TableCell>
-                                    <TableCell><img src={prod.image} className="img-fluid rounded" /></TableCell>
                                     <TableCell>
-                                        <Button variant="contained" color="primary" startIcon={<Edit2 />}>
+                                        <img
+                                            src={prod?.imageUrl || ""}
+                                            className="product-image"
+                                            alt="product"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button onClick={()=>handleCloseModal()} variant="contained" color="primary" startIcon={<Edit2 />}>
                                             edit
                                         </Button>
                                     </TableCell>
@@ -203,6 +331,17 @@ const EditProduct = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                {/* Modal */}
+                <AddEditProductDT
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    onSubmit={(pd) => {
+                        console.log("Dữ liệu gửi lên:", pd);
+                        setModalOpen(false); // đóng modal sau khi submit
+                    }}
+                    data={pd}
+                    dataList={product.productDetails}
+                />
             </div>
         </div>
     );

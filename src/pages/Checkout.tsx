@@ -142,7 +142,7 @@ export default function Checkout() {
                             {transaction?.products?.map(product=>(
                                 <div className="d-flex mb-3">
                                     <img
-                                        src={product.image}
+                                        src={product.avtUrl}
                                         alt="áo"
                                         style={{ width: 64, height: 64, objectFit: "cover" }}
                                         className="me-3"

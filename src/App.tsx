@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Home from "./pages/Home";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import ProductDetail from "./components/ProductDetail";
+import ProductDetail from "./components/ProductDetailPage";
 import ProductList from "./pages/ProductList";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
