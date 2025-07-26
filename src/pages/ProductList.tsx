@@ -54,80 +54,82 @@ function ProDuctList() {
 
     return (
         <>
-            {loading && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100vw',
-                    height: '100vh',
-                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    zIndex: 1300, // cao hơn dialog & navbar của MUI
-                }}>
-                    <CircularProgress size={60} />
-                </div>
-            )}
-            <Header/>
-            <div className="text-center row">
-                <div className="d-flex justify-content-center gap-5 mt-1">
-                    {/* Danh mục */}
-                    <div>
-                        <div><strong>Danh mục:</strong></div>
-                        <div className="d-flex flex-wrap gap-3 mt-1">
-                            {categoryLst?.map(ct => (
-                                <div key={ct.code} className="d-flex align-items-center gap-1">
-                                    <Checkbox
-                                        checked={ctPr?.code === ct.code}
-                                        onChange={() =>
-                                            setCtPr(ctPr?.code === ct.code ? undefined : ct)
-                                        }
-                                    />
-                                    <label className="mb-0">{ct.name}</label>
-                                </div>
-                            ))}
-                        </div>
-
-                        {ctPr !== undefined && (
+            <div className="main-content">
+                {loading && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 1300, // cao hơn dialog & navbar của MUI
+                    }}>
+                        <CircularProgress size={60} />
+                    </div>
+                )}
+                <Header/>
+                <div className="text-center row">
+                    <div className="d-flex justify-content-center gap-5 mt-1">
+                        {/* Danh mục */}
+                        <div>
+                            <div><strong>Danh mục:</strong></div>
                             <div className="d-flex flex-wrap gap-3 mt-1">
-                                {ctPr.child.map(ct => (
+                                {categoryLst?.map(ct => (
                                     <div key={ct.code} className="d-flex align-items-center gap-1">
                                         <Checkbox
-                                            checked={category?.code === ct.code}
+                                            checked={ctPr?.code === ct.code}
                                             onChange={() =>
-                                                setCategory(category?.code === ct.code ? undefined : ct)
+                                                setCtPr(ctPr?.code === ct.code ? undefined : ct)
                                             }
                                         />
                                         <label className="mb-0">{ct.name}</label>
                                     </div>
                                 ))}
                             </div>
-                        )}
-                    </div>
 
-                    {/* Nhãn hàng */}
-                    <div>
-                        <div><strong>Nhãn hàng:</strong></div>
-                        <div className="d-flex flex-wrap gap-3 mt-1">
-                            {brandLst?.map(b => (
-                                <div key={b.code} className="d-flex align-items-center gap-1">
-                                    <Checkbox
-                                        checked={br?.code === b.code}
-                                        onChange={() =>
-                                            setBr(br?.code === b.code ? undefined : b)
-                                        }
-                                    />
-                                    {/*<img src={b.logo} className="product-image" />*/}
-                                    <label className="mb-0">{b.name}</label>
+                            {ctPr !== undefined && (
+                                <div className="d-flex flex-wrap gap-3 mt-1">
+                                    {ctPr.child.map(ct => (
+                                        <div key={ct.code} className="d-flex align-items-center gap-1">
+                                            <Checkbox
+                                                checked={category?.code === ct.code}
+                                                onChange={() =>
+                                                    setCategory(category?.code === ct.code ? undefined : ct)
+                                                }
+                                            />
+                                            <label className="mb-0">{ct.name}</label>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
+                        </div>
+
+                        {/* Nhãn hàng */}
+                        <div>
+                            <div><strong>Nhãn hàng:</strong></div>
+                            <div className="d-flex flex-wrap gap-3 mt-1">
+                                {brandLst?.map(b => (
+                                    <div key={b.code} className="d-flex align-items-center gap-1">
+                                        <Checkbox
+                                            checked={br?.code === b.code}
+                                            onChange={() =>
+                                                setBr(br?.code === b.code ? undefined : b)
+                                            }
+                                        />
+                                        {/*<img src={b.logo} className="product-image" />*/}
+                                        <label className="mb-0">{b.name}</label>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
+                <ProductSection query={query}/>
             </div>
-            <ProductSection query={query}/>
             <Footer/>
         </>
     );
