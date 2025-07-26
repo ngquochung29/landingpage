@@ -34,6 +34,7 @@ import {createProduct, findProdByCode, updateProduct} from "../../api/ProductApi
 import imageCompression from "browser-image-compression";
 import {compressImage} from "../../types/ImageUtils";
 import AddEditProductDT from "./AddEditProductDT";
+import {fetchCategory} from "../../api/MasterDataApi";
 interface SaleDto{
     quantity:number,
     sold:number
@@ -41,6 +42,7 @@ interface SaleDto{
 const  EditProduct = () => {
     const { code } = useParams();
     const [pd, setPd] = useState<ProductDetail>(mockProductDT);
+    const [cateLst, setCateLst] = useState<Category[]>([]);
     const [sale,setSale] = useState<SaleDto>({
         quantity:0,
         sold:0
@@ -96,7 +98,7 @@ const  EditProduct = () => {
                     ...value,
                     tl:value.category.substring(0,3)
                 }
-                setCategory(mockCategory.find((c) => c.code === tl))
+                setCategory(cateLst.find((c) => c.code === tl))
             }
             setProduct(value);
         }).catch(
@@ -108,6 +110,9 @@ const  EditProduct = () => {
         if (code!== "null"){
             findProd()
         }
+        fetchCategory().then(ct=>{
+            setCateLst(ct)
+        })
     }, [code]);
 
     useEffect(() => {
@@ -122,7 +127,7 @@ const  EditProduct = () => {
             [name]: value,
         }));
         if (e.target.name === "tl"){
-            setCategory(mockCategory.find((c) => c.code === e.target.value))
+            setCategory(cateLst.find((c) => c.code === e.target.value))
         }
     };
     const handleClick = () => {
@@ -242,7 +247,7 @@ const  EditProduct = () => {
                                 required
                             >
                                 <option value="">-- Chọn the loai --</option>
-                                {mockCategory.map((cate) => (
+                                {cateLst?.map((cate) => (
                                     <option value={cate.code}>
                                         {cate.name}
                                     </option>

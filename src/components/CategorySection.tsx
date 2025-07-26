@@ -6,6 +6,8 @@ const categories = [
 ];
 
 function CategorySection() {
+
+
     return (
         <div className="container my-5">
             <h2 className="text-center mb-4">Danh mục nổi bật</h2>

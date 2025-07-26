@@ -5,19 +5,16 @@ import {useEffect, useState} from "react";
 import {fetchProducts} from "../api/ProductApi";
 
 
-
-function ProductSection() {
+interface ProductSectionProds{
+    query:ProductQuery
+}
+function ProductSection(prod:ProductSectionProds) {
     const [products, setProducts] = useState<Product[]|[]>();
-    const [query,setQuery] = useState<ProductQuery>({
-        sortDir: "DESC",
-        sortBy : "createdAt",
-        page:0,
-        size:10,
-        query: "",
-        category: "",
-        brand:""
-    })
+    const [query,setQuery] = useState<ProductQuery>(prod.query)
     const [repsData, setRepsData] = useState<PageDto>();
+    useEffect(() => {
+        setQuery(prod.query)
+    }, [prod.query]);
 
     useEffect(() => {
         fetchProducts(query)

@@ -94,6 +94,13 @@ export const mockbrand: Brand [] = [
     }
 ]
 
+export const mockCate:Category = {
+        name: "",
+        code: "",
+        image:"",
+        child: []
+    }
+
 export const mockCategory: Category [] = [
     {
         name: "TL1",
