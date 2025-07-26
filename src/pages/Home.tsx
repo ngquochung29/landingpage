@@ -24,7 +24,7 @@ function Home() {
             <HeroBanner />
             <CategorySection />
             <ProductSection query={query} />
-            {/*<Footer/>*/}
+            <Footer/>
         </>
     );
 }

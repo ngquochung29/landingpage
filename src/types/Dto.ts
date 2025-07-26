@@ -56,6 +56,7 @@ export interface ProductDetail{
 export interface Brand {
     code: string;
     name: string;
+    logo:string;
 }
 
 export interface Transaction {
@@ -87,12 +88,20 @@ export const mockbrand: Brand [] = [
     {
         name: "TL1",
         code: "001",
+        logo:""
     },
     {
         name: "TL2",
         code: "002",
+        logo:""
     }
 ]
+
+export const mockBR:Brand = {
+    name: "",
+    code: "",
+    logo:""
+}
 
 export const mockCate:Category = {
         name: "",

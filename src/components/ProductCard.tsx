@@ -10,7 +10,10 @@ interface Props {
 }
 
 function ProductCard({ product }: Props) {
-    // const finalPrice = Math.round(product.price * (1 - product.discount / 100));
+    const finalPrice = product?.discount && product.discount > 0
+        ? Math.round(product.price * (1 - product.discount / 100))
+        : product.price;
+
 
     useEffect(() => {
         console.log("vao day")
@@ -18,7 +21,7 @@ function ProductCard({ product }: Props) {
     }, []);
 
     return (
-        <NavLink to={"/product/"+product.code} className="p-1">
+        <NavLink to={"/product/"+product.code} className="p-1" style={{ textDecoration: 'none' }}>
             <div className="bg-white rounded shadow-sm overflow-hidden position-relative">
                 {/* Ảnh sản phẩm */}
                 <img
@@ -47,7 +50,7 @@ function ProductCard({ product }: Props) {
                 {/* Nội dung dưới ảnh */}
                 <div className="px-2 pt-2 pb-3">
                     <div className="fw-bold text-danger" style={{ fontSize: "0.95rem" }}>
-                        {/*{finalPrice.toLocaleString()}đ*/}
+                        {finalPrice.toLocaleString()}đ
                     </div>
                     {product.discount > 0 && (
                         <div
@@ -60,7 +63,7 @@ function ProductCard({ product }: Props) {
 
                     <div
                         className="small text-dark mt-1"
-                        style={{ fontSize: "0.85rem", lineHeight: "1.2em", minHeight: "2.4em" }}
+                        style={{ fontSize: "0.99rem", lineHeight: "1.2em", minHeight: "2.4em" }}
                     >
                         {product.name}
                     </div>

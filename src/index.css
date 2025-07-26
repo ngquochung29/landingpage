@@ -27,6 +27,13 @@ code {
   border-radius: 6px;
 }
 
+.logo-brand {
+  max-width: 3px;
+  max-height: 3px;
+  object-fit: contain;
+  border-radius: 1px;
+}
+
 .product-detail-image {
   max-width: 300px;
   max-height: 400px;
@@ -48,4 +55,20 @@ code {
 .showBr{
   display: flex;
   justify-content: flex-start;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
 }

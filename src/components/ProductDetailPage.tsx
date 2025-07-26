@@ -75,8 +75,6 @@ function ProductDetailPage() {
 
     if (!product) return <div className="container my-5">Sản phẩm không tồn tại</div>;
 
-    const finalPrice = product.price * (1 - product.discount / 100);
-
 
     // @ts-ignore
     return (

@@ -90,7 +90,7 @@ const SideBar: React.FC<Props> = ({ open, appsOpen, toggleApps, drawerWidth }) =
                         <ListItemIcon><CategoryIcon  /></ListItemIcon>
                         {open && <ListItemText primary="Danh mục" />}
                     </ListItemButton>
-                    <ListItemButton component={RouterLink} to="/admin/category">
+                    <ListItemButton component={RouterLink} to="/admin/brand">
                         <ListItemIcon><BrandingWatermark  /></ListItemIcon>
                         {open && <ListItemText primary="Nhãn hàng" />}
                     </ListItemButton>

@@ -21,11 +21,20 @@ import {compressImage} from "../../types/ImageUtils";
 import {uploadFile} from "../../api/ImageApi";
 import {DeleteIcon} from "lucide-react";
 import {fetchCategory, updateCategory} from "../../api/MasterDataApi";
+import {useSnackbar} from "notistack";
 
 const CategoryTable = () => {
     const [cateLst, setCateLst] = useState<Category[]>([]);
     const [newCate,setNewCate] = useState<Category>(mockCate)
+    const { enqueueSnackbar } = useSnackbar();
 
+    const handleClickSC = () => {
+        enqueueSnackbar('Thành công!', { variant: 'success' });
+    };
+
+    const handleWarning = (message:string) => {
+        enqueueSnackbar(message, { variant: 'warning' });
+    };
     const fetch=()=>{
         fetchCategory().then(ct=>{
             setCateLst(ct)
@@ -38,7 +47,7 @@ const CategoryTable = () => {
 
     const update= async ()=>{
         await updateCategory(cateLst)
-        alert("Lưu thành công")
+        handleClickSC();
     }
 
     const addCate = () => {

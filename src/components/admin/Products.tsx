@@ -18,13 +18,14 @@ import {Brand, Category, mockCategory, mockProductList, PageDto, Product, Produc
 import {Edit2} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import {fetchProducts} from "../../api/ProductApi";
-import {fetchCategory} from "../../api/MasterDataApi";
+import {fetchBrands, fetchCategory} from "../../api/MasterDataApi";
 
 
 
 const Products = () => {
     const [products, setProducts] = useState<Product[]>();
     const [cateLst, setCateLst] = useState<Category[]>([]);
+    const [brands, setBrands] = useState<Brand[]>([]);
     const [repsData, setRepsData] = useState<PageDto>();
     const [searchTerm, setSearchTerm] = useState('');
     const [query,setQuery] = useState<ProductQuery>({
@@ -47,6 +48,7 @@ const Products = () => {
 
     useEffect(() => {
         fetchCategory().then(c=>setCateLst(c));
+        fetchBrands().then(b=>setBrands(b))
     }, []);
 
     const findCateByCode = (code: string): string => {
@@ -54,6 +56,16 @@ const Products = () => {
             const foundChild = parent.child?.find(child => child.code === code);
             if (foundChild) {
                 return foundChild.name;
+            }
+        }
+        return "";
+    };
+
+
+    const findBrandByCode = (code: string): string => {
+        for (const b of brands) {
+            if (b.code===code){
+                return b.name
             }
         }
         return "";
@@ -120,7 +132,7 @@ const Products = () => {
                             <TableRow>
                                 <TableCell>{prod.code}</TableCell>
                                 <TableCell>{prod.name}</TableCell>
-                                <TableCell>{prod.brand}</TableCell>
+                                <TableCell>{findBrandByCode(prod.brand)}</TableCell>
                                 <TableCell>{findCateByCode(prod.category)}</TableCell>
                                 <TableCell><img
                                     src={prod?.avtUrl || ""}

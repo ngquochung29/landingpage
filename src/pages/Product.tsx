@@ -8,8 +8,10 @@ function Product() {
     return (
         <>
             <Header/>
-            <ProductDetailPage />
-            {/*<Footer/>*/}
+            <div className="main-content">
+                <ProductDetailPage />
+            </div>
+            <Footer/>
         </>
     );
 }

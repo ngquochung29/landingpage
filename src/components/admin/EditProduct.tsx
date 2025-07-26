@@ -10,11 +10,22 @@ import {
     TableHead,
     TableRow,
     Typography,
-    Paper, TextField,
-    Button, InputLabel, NativeSelect, Select, OutlinedInput, MenuItem, Theme, useTheme, SelectChangeEvent
+    Paper,
+    TextField,
+    Button,
+    InputLabel,
+    NativeSelect,
+    Select,
+    OutlinedInput,
+    MenuItem,
+    Theme,
+    useTheme,
+    SelectChangeEvent,
+    CircularProgress
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import {
+    Brand,
     Category,
     CheckOut,
     mockbrand,
@@ -34,7 +45,8 @@ import {createProduct, findProdByCode, updateProduct} from "../../api/ProductApi
 import imageCompression from "browser-image-compression";
 import {compressImage} from "../../types/ImageUtils";
 import AddEditProductDT from "./AddEditProductDT";
-import {fetchCategory} from "../../api/MasterDataApi";
+import {fetchBrands, fetchCategory} from "../../api/MasterDataApi";
+import { useSnackbar } from 'notistack';
 interface SaleDto{
     quantity:number,
     sold:number
@@ -47,8 +59,25 @@ const  EditProduct = () => {
         quantity:0,
         sold:0
     });
+    const [loading,setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
+    const [brands, setBrands] = useState<Brand[]>([]);
+
+    const [showAlert, setShowAlert] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
+    const handleSuccess = () => {
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 3000);
+    };
+
+    const handleClickSC = () => {
+        enqueueSnackbar('Thành công!', { variant: 'success' });
+    };
+
+    const handleWarning = (message:string) => {
+        enqueueSnackbar(message, { variant: 'warning' });
+    };
 
     const handleCloseModal = () => {
         setModalOpen(false);
@@ -78,6 +107,7 @@ const  EditProduct = () => {
     const [category, setCategory] = useState<Category>();
 
     const findProd = () =>{
+        setLoading(true)
         findProdByCode(code? code:"").then(value => {
             if (value.productDetails){
                 var sold = 0;
@@ -102,17 +132,26 @@ const  EditProduct = () => {
             }
             setProduct(value);
         }).catch(
-            err => alert("Lỗi!"+ err)
+            err => handleWarning("Lỗi")
         )
+        setLoading(false)
     }
 
     useEffect(() => {
+        setLoading(true)
         if (code!== "null"){
             findProd()
+            setLoading(false)
         }
         fetchCategory().then(ct=>{
             setCateLst(ct)
+            setLoading(false)
         })
+        fetchBrands().then(br=>{
+            setBrands(br)
+            setLoading(false)
+        })
+
     }, [code]);
 
     useEffect(() => {
@@ -144,11 +183,11 @@ const  EditProduct = () => {
             const isImage = allowedExtensions.some(ext => fileName.endsWith(`.${ext}`));
 
             if (!isImage) {
-                alert("Vui lòng chọn một file ảnh (jpg, png, gif, webp)!");
+                handleWarning("Vui lòng chọn một file ảnh (jpg, png, gif, webp)!");
                 return;
             }
             if (file.size > 5 * 1024 * 1024) {
-                alert("File ảnh phải nhỏ hơn 5MB!");
+                handleWarning("File ảnh phải nhỏ hơn 5MB!");
                 return;
             }
             console.log(file.size)
@@ -163,7 +202,7 @@ const  EditProduct = () => {
                             ...prev,
                             avtUrl: d
                         }));
-                    }).catch(err => alert("Lỗi upload file!"));
+                    }).catch(err => handleWarning("Lỗi upload file!"));
                 }
             );
         }
@@ -171,21 +210,26 @@ const  EditProduct = () => {
 
 
     const addProduct = () =>{
-        console.log(product)
+        setLoading(true)
         createProduct(product).then((code)=>{
-            alert("Thanh cong");
+            handleClickSC()
             navigate("/admin/add-prod/"+code);
+            setLoading(false)
         })
+        handleClickSC()
     }
 
     const editProduct = () =>{
+        setLoading(true)
         console.log(product)
         updateProduct(product)
+        handleClickSC()
+        setLoading(false)
     }
 
     const createPD = () =>{
         if (code==="null"){
-            alert("Vui loi luu san pham truoc")
+            alert("Vui lòng lưu sản phẩm trước")
         }
         setModalOpen(true);
     }
@@ -198,6 +242,7 @@ const  EditProduct = () => {
 
     return (
         <div className="container my-5">
+            {loading && <CircularProgress size={40} />}
             <div className="row">
                 <div className="col-md-6">
                     <img
@@ -231,7 +276,7 @@ const  EditProduct = () => {
                                 required
                             >
                                 <option value="">-- Chọn nhãn hàng --</option>
-                                {mockbrand.map((brand) => (
+                                {brands?.map((brand) => (
                                     <option value={brand.code} >
                                         {brand.name}
                                     </option>
