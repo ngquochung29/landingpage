@@ -1,20 +1,32 @@
 // components/CategorySection.tsx
-const categories = [
-    { name: "Áo nữ", image: "https://buggy.yodycdn.com/images/home-banner-dt/abc69d9b67573502f5216e54309f49f5.webp" },
-    { name: "Quần nam", image: "https://buggy.yodycdn.com/images/home-banner-dt/abc69d9b67573502f5216e54309f49f5.webp" },
-    { name: "Trẻ em", image: "https://buggy.yodycdn.com/images/home-banner-dt/abc69d9b67573502f5216e54309f49f5.webp" }
-];
+import {useEffect, useState} from "react";
+import {fetchCategory} from "../api/MasterDataApi";
+import {Category} from "../types/Dto";
+import {useNavigate} from "react-router-dom";
 
 function CategorySection() {
 
+    const [categoryLst, setCategoryLst] = useState<Category[]>([]);
+    useEffect(() => {
+        fetchCategory().then(c=>setCategoryLst(c));
+    }, []);
+
+    const navigate = useNavigate();
+    const riderect = (code:string) =>{
+        navigate("/products?cate="+code);
+    }
 
     return (
         <div className="container my-5">
             <h2 className="text-center mb-4">Danh mục nổi bật</h2>
             <div className="row">
-                {categories.map((c, index) => (
-                    <div className="col-md-4 text-center" key={index}>
-                        <img src={c.image} alt={c.name} className="img-fluid rounded mb-2" />
+                {categoryLst.map((c) => (
+                    <div onClick={()=>riderect(c.code)} className="col-md-4 img-fluid rounded mb-2" key={c.code}>
+                        <img
+                            src={c.image}
+                            className="img-fluid rounded mb-2"
+                            style={{ height: "200px", objectFit: "cover", width: "100%" }}
+                        />
                         <h5>{c.name}</h5>
                     </div>
                 ))}

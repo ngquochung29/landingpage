@@ -10,7 +10,7 @@ interface Props {
 }
 
 function ProductCard({ product }: Props) {
-    const finalPrice = Math.round(product.price * (1 - product.discount / 100));
+    // const finalPrice = Math.round(product.price * (1 - product.discount / 100));
 
     useEffect(() => {
         console.log("vao day")
@@ -47,7 +47,7 @@ function ProductCard({ product }: Props) {
                 {/* Nội dung dưới ảnh */}
                 <div className="px-2 pt-2 pb-3">
                     <div className="fw-bold text-danger" style={{ fontSize: "0.95rem" }}>
-                        {finalPrice.toLocaleString()}đ
+                        {/*{finalPrice.toLocaleString()}đ*/}
                     </div>
                     {product.discount > 0 && (
                         <div

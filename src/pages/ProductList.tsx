@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import {Checkbox} from "@mui/material";
 import {Brand, Category, mockbrand, mockCategory, ProductQuery} from "../types/Dto";
 import {useSearchParams} from "react-router-dom";
+import {fetchCategory} from "../api/MasterDataApi";
 
 function ProDuctList() {
     const [ctPr, setCtPt] = useState<Category>();
@@ -27,7 +28,7 @@ function ProDuctList() {
     });
 
     useEffect(() => {
-
+        fetchCategory().then(c=>setCategoryLst(c));
     }, []);
 
     useEffect(() => {
@@ -48,7 +49,7 @@ function ProDuctList() {
                     <div>
                         <div><strong>Danh mục:</strong></div>
                         <div className="d-flex flex-wrap gap-3 mt-1">
-                            {mockCategory.map(ct => (
+                            {categoryLst?.map(ct => (
                                 <div key={ct.code} className="d-flex align-items-center gap-1">
                                     <Checkbox
                                         checked={ctPr?.code === ct.code}
